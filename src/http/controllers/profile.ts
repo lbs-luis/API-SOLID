@@ -1,5 +1,16 @@
+import { UsersRepository } from "@/repositories/users/users-repository"
+import { GetUserProfileService } from "@/use-cases/get-user-profile"
 import { FastifyRequest, FastifyReply } from "fastify"
 
 export async function profile(request: FastifyRequest, response: FastifyReply) {
-  response.status(200)
+  const getUserProfile = new GetUserProfileService(new UsersRepository())
+
+  const { user } = await getUserProfile.execute({ userId: request.user.sub })
+
+  response.status(200).send({
+    user: {
+      ...user,
+      password_hash: undefined
+    }
+  })
 }
