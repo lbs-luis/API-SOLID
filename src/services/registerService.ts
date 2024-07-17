@@ -1,4 +1,3 @@
-import { prisma } from "@/lib/prisma"
 import { IUsersRepository } from "@/repositories/users/IUsersRepository"
 import { hash } from "bcryptjs"
 
