@@ -10,7 +10,9 @@
     "start": "node build/server.js",
     "build": "tsup src --out-dir build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:reset": "pnpm dlx prisma migrate reset",
+    "db:studio": "pnpm dlx prisma studio"
   },
   "keywords": [],
   "devDependencies": {

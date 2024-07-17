@@ -1,6 +1,6 @@
 import { z } from "zod"
 import { FastifyRequest, FastifyReply } from "fastify"
-import { RegisterService } from "@/use-cases/register"
+import { RegisterUsersService } from "@/use-cases/register-users/register-users"
 import { UsersRepository } from "@/repositories/users/users-repository"
 import { UserAlreadyExistsError } from "@/use-cases/errors/user-already-exists-error"
 
@@ -11,15 +11,14 @@ export async function signUp(request: FastifyRequest, response: FastifyReply) {
     name: z.string(),
     email: z.string().email(),
     password: z.string().min(6),
-    role: z.union([z.literal("Administrator"), z.literal("Operator")]),
   })
-  const { name, email, password, role } = registBodySchema.parse(request.body)
+  const { name, email, password } = registBodySchema.parse(request.body)
 
   try {
 
     const registerService = new RegisterService(new UsersRepository())
 
-    await registerService.execute({ name, email, password, role })
+    await registerService.execute({ name, email, password })
 
     return response.status(201).send('user created')
 

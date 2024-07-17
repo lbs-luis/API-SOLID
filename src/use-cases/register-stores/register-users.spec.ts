@@ -1,8 +1,8 @@
 import { expect, describe, it, beforeEach } from 'vitest'
-import { RegisterService } from './register'
+import { RegisterService } from './register-users'
 import { compare } from 'bcryptjs'
 import { InMemorUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
-import { UserAlreadyExistsError } from './errors/user-already-exists-error'
+import { UserAlreadyExistsError } from '../errors/user-already-exists-error'
 
 describe('Register Service', () => {
   let sut: RegisterService
@@ -16,7 +16,6 @@ describe('Register Service', () => {
       name: 'John Doe',
       email: 'john.doe@gmail.com',
       password: 'johndoe.password',
-      role: "Administrator"
     })
 
     expect(user.id).toEqual(expect.any(String))
@@ -27,14 +26,12 @@ describe('Register Service', () => {
       name: 'John Doe',
       email: 'john.doe@gmail.com',
       password: 'johndoe.password',
-      role: "Administrator"
     })
 
     expect(() => sut.execute({
       name: 'John Doe',
       email: 'john.doe@gmail.com',
       password: 'johndoe.password',
-      role: "Administrator"
     })
     ).rejects.toBeInstanceOf(UserAlreadyExistsError)
   })
@@ -44,7 +41,6 @@ describe('Register Service', () => {
       name: 'John Doe',
       email: 'john.doe@gmail.com',
       password: 'johndoe.password',
-      role: "Administrator"
     })
 
     const isPasswordCorrectlyHashed = await compare('johndoe.password', user.password_hash)

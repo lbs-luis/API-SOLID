@@ -18,14 +18,18 @@ export async function signIn(request: FastifyRequest, response: FastifyReply) {
     const { user } = await authenticateService.execute({ email, password, })
 
     const token = await response.jwtSign(
-      {}, {
+      {
+        role: user.role
+      }, {
       sign: {
         sub: user.id
       }
     })
 
     const refreshToken = await response.jwtSign(
-      {}, {
+      {
+        role: user.role
+      }, {
       sign: {
         sub: user.id,
         expiresIn: '3d',
