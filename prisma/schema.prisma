@@ -29,11 +29,12 @@ model User {
 }
 
 model Store {
-  id          String   @id @default(uuid())
-  name        String
-  description String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @default(now())
+  id              String   @id @default(uuid())
+  store_custom_id String   @unique
+  name            String
+  description     String
+  created_at      DateTime @default(now())
+  updated_at      DateTime @default(now())
 
   user       User   @relation(fields: [manager_id], references: [id])
   manager_id String

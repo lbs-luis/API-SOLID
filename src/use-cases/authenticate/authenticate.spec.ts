@@ -1,9 +1,8 @@
 import { expect, describe, it, beforeEach } from 'vitest'
-import { compare, hash } from 'bcryptjs'
+import { hash } from 'bcryptjs'
 import { AuthenticateService } from './authenticate'
 import { InMemorUsersRepository } from '@/repositories/in-memory/in-memory-users-repository'
-import { UsersRepository } from '@/repositories/users/users-repository'
-import { InvalidCredentialsError } from './errors/invalid-credentials-error'
+import { InvalidCredentialsError } from '../errors/invalid-credentials-error'
 
 describe('Authenticate Service', async () => {
   let usersRepository: InMemorUsersRepository
@@ -17,7 +16,6 @@ describe('Authenticate Service', async () => {
       name: 'John Doe',
       email: 'john.doe@gmail.com',
       password_hash: await hash('johndoe.password', 6),
-      role: "Administrator"
     })
   })
 

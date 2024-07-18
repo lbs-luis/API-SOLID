@@ -6,7 +6,7 @@ import { UserAlreadyExistsError } from "@/use-cases/errors/user-already-exists-e
 
 
 
-export async function signUp(request: FastifyRequest, response: FastifyReply) {
+export async function registerNewUser(request: FastifyRequest, response: FastifyReply) {
   const registBodySchema = z.object({
     name: z.string(),
     email: z.string().email(),
@@ -16,9 +16,9 @@ export async function signUp(request: FastifyRequest, response: FastifyReply) {
 
   try {
 
-    const registerService = new RegisterService(new UsersRepository())
+    const registerUserService = new RegisterUsersService(new UsersRepository())
 
-    await registerService.execute({ name, email, password })
+    await registerUserService.execute({ name, email, password })
 
     return response.status(201).send('user created')
 

@@ -1,35 +1,53 @@
 import { prisma } from "@/lib/prisma";
-import { Prisma, User } from '@prisma/client'
-import { IUsersRepository } from "./IUsersRepository";
-import { UserAlreadyExistsError } from "@/use-cases/errors/user-already-exists-error";
+import { IStoresRepository } from "./IStoresRepository";
+import { Prisma } from "@prisma/client";
+import { StoreAlreadyExistsError } from "@/use-cases/errors/store-already-exists-error";
+import { ResourceNotFoundError } from "@/use-cases/errors/resource-not-found-error";
 
-export class UsersRepository implements IUsersRepository {
-  async findById(id: string) {
-    const userWithSameId = await prisma.user.findUnique({
+
+export class StoresRepository implements IStoresRepository {
+  async findByCustomId(store_custom_id: string) {
+    const store = await prisma.store.findUnique({
       where: {
-        id,
+        store_custom_id
       }
     })
-    return userWithSameId
+
+    return store
   }
 
-
-  async findByEmail(email: string) {
-    const userWithSameEmail = await prisma.user.findUnique({
+  async findAllManagerStores(manager_id: string) {
+    const stores = await prisma.store.findMany({
       where: {
-        email,
+        manager_id
       }
     })
-    return userWithSameEmail
+    return stores
   }
 
-  async create(data: Prisma.UserCreateInput) {
-    const userWithSameEmail = await this.findByEmail(data.email)
-    if (userWithSameEmail) throw new UserAlreadyExistsError()
-
-    const user = await prisma.user.create({
-      data,
+  async create({ description, manager_id, name, store_custom_id }: Prisma.StoreUncheckedCreateInput) {
+    const storeWithSameCustomId = await prisma.store.findUnique({
+      where: {
+        store_custom_id
+      }
     })
-    return user
+    if (storeWithSameCustomId) throw new StoreAlreadyExistsError()
+    const userExists = await prisma.user.findUnique({
+      where: {
+        id: manager_id
+      }
+    })
+    if (!userExists) throw new ResourceNotFoundError()
+
+    const store = await prisma.store.create({
+      data: {
+        description,
+        name,
+        store_custom_id,
+        manager_id
+      }
+    })
+
+    return store
   }
 }

@@ -1,5 +1,5 @@
 import { UsersRepository } from "@/repositories/users/users-repository"
-import { GetUserProfileService } from "@/use-cases/get-user-profile"
+import { GetUserProfileService } from "@/use-cases/get-user-profile/get-user-profile"
 import { FastifyRequest, FastifyReply } from "fastify"
 
 export async function profile(request: FastifyRequest, response: FastifyReply) {
