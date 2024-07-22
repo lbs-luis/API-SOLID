@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 
 export async function refreshSession(request: FastifyRequest, response: FastifyReply) {
-  await request.jwtVerify({ onlyCookie: true })
+  await request.jwtVerify({ onlyCookie: true }).catch((error) => response.status(401).send({ message: 'Unauthorized.' }))
 
   const { role } = request.user
 

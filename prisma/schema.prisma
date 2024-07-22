@@ -39,5 +39,25 @@ model Store {
   user       User   @relation(fields: [manager_id], references: [id])
   manager_id String
 
+  Product Product[]
+
   @@map("stores")
+}
+
+model Product {
+  id                String @id @default(uuid())
+  product_custom_id String @unique
+  bar_code          String
+
+  name        String
+  description String
+
+  quantity   Int      @default(0)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+
+  store    Store  @relation(fields: [store_id], references: [id])
+  store_id String
+
+  @@map("products")
 }

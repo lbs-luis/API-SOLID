@@ -6,7 +6,7 @@ import { UserAlreadyExistsError } from "@/use-cases/errors/user-already-exists-e
 
 
 
-export async function registerNewUser(request: FastifyRequest, response: FastifyReply) {
+export async function signUp(request: FastifyRequest, response: FastifyReply) {
   const registBodySchema = z.object({
     name: z.string(),
     email: z.string().email(),

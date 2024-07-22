@@ -11,7 +11,7 @@ import { GetStoresService } from "@/use-cases/get-stores/get-stores"
 
 
 
-export async function registerStoreAndManager(request: FastifyRequest, response: FastifyReply) {
+export async function signUpStore(request: FastifyRequest, response: FastifyReply) {
   const registBodySchema = z.object({
     storeName: z.string(),
     storeDescription: z.string(),
@@ -39,7 +39,7 @@ export async function registerStoreAndManager(request: FastifyRequest, response:
 
   } catch (err) {
     if (err instanceof UserAlreadyExistsError || err instanceof ResourceNotFoundError || err instanceof StoreAlreadyExistsError) {
-      return response.status(500).send({ error: err.message })
+      return response.status(400).send({ error: err.message })
     }
 
     throw err

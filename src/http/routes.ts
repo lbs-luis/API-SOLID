@@ -1,15 +1,17 @@
 import { FastifyInstance } from "fastify";
-import { registerNewUser } from "./controllers/register-new-user";
-import { authenticate } from "./controllers/authenticate";
+import { signUp } from "./controllers/sign-up";
+import { signIn } from "./controllers/sign-in";
 import { profile } from "./controllers/profile";
 import { verifyJWT } from "./middlewares/verify-jwt";
 import { refreshSession } from "./controllers/refresh-session";
-import { registerStoreAndManager } from "./controllers/register-store-and-manager";
+import { signUpStore } from "./controllers/sign-up-store";
+import { signOut } from "./controllers/sign-out";
 
 export async function appRoutes(app: FastifyInstance) {
-  app.post('/sign-up', registerNewUser)
-  app.post('/sign-up/store', registerStoreAndManager)
-  app.post('/sign-in', authenticate)
+  app.post('/auth/sign-up', signUp)
+  app.post('/auth/sign-up/store', signUpStore)
+  app.post('/auth/sign-in', signIn)
+  app.get('/auth/sign-out', signOut)
   app.patch('/auth/refresh-session', refreshSession)
 
   /* Authenticated */
