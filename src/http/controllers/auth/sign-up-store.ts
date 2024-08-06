@@ -7,7 +7,7 @@ import { RegisterStoresService } from "@/use-cases/register-stores/register-stor
 import { StoresRepository } from "@/repositories/stores/stores-repository"
 import { ResourceNotFoundError } from "@/use-cases/errors/resource-not-found-error"
 import { StoreAlreadyExistsError } from "@/use-cases/errors/store-already-exists-error"
-import { GetStoresService } from "@/use-cases/get-stores/get-stores"
+import { GetStoreService } from "@/use-cases/get-stores/get-store"
 
 
 
@@ -27,9 +27,9 @@ export async function signUpStore(request: FastifyRequest, response: FastifyRepl
     const registerUserService = new RegisterUsersService(new UsersRepository())
     const storesRepository = new StoresRepository()
     const registerStoreService = new RegisterStoresService(storesRepository)
-    const getStoresService = new GetStoresService(storesRepository)
+    const getStoreService = new GetStoreService(storesRepository)
 
-    const { store: storeWithSameId } = await getStoresService.execute({ store_custom_id: storeCustomId })
+    const { store: storeWithSameId } = await getStoreService.execute({ store_custom_id: storeCustomId })
     if (storeWithSameId) throw new StoreAlreadyExistsError()
 
     const { user } = await registerUserService.execute({ name: managerName, email: managerEmail, password: managerPassword, role: 'ADMIN' })

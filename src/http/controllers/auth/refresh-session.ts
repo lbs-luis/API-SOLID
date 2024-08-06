@@ -1,7 +1,11 @@
 import { FastifyRequest, FastifyReply } from "fastify"
 
 export async function refreshSession(request: FastifyRequest, response: FastifyReply) {
-  await request.jwtVerify({ onlyCookie: true }).catch((error) => response.status(401).send({ message: 'Unauthorized.' }))
+  await request.jwtVerify({ onlyCookie: true }).catch((error) => {
+    // console.log(request.cookies)
+    // console.log(error)
+    response.status(401).send({ message: 'Unauthorized.' })
+  })
 
   const { role } = request.user
 
@@ -24,7 +28,7 @@ export async function refreshSession(request: FastifyRequest, response: FastifyR
     .setCookie('refreshToken', refreshToken, {
       path: '/',
       secure: true,
-      sameSite: true,
+      sameSite: 'none',
       httpOnly: true
     })
     .status(200)

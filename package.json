@@ -1,9 +1,9 @@
 {
-  "name": "solid-api",
+  "name": "dashboardwizard-api",
   "author": "@luis",
   "license": "ISC",
   "version": "1.0.0",
-  "description": "api with solid principles",
+  "description": "D.W-api",
   "main": "server.ts",
   "scripts": {
     "dev": "tsx watch src/server.ts",

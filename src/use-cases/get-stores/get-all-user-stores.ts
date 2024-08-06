@@ -2,21 +2,21 @@ import { Store } from "@prisma/client"
 import { IStoresRepository } from "@/repositories/stores/IStoresRepository"
 
 interface IGetStoresServiceRequest {
-  store_custom_id: string
+  userId: string
 }
 
 interface IGetStoresServiceResponse {
-  store: Store | null
+  stores: Store[]
 }
 
-export class GetStoresService {
+export class GetAllUserStoresService {
   constructor(private storesRepository: IStoresRepository) { }
 
-  async execute({ store_custom_id }: IGetStoresServiceRequest): Promise<IGetStoresServiceResponse> {
-    const store = await this.storesRepository.findByCustomId(store_custom_id)
+  async execute({ userId }: IGetStoresServiceRequest): Promise<IGetStoresServiceResponse> {
+    const stores = await this.storesRepository.findAllUserStores(userId)
 
     return {
-      store
+      stores
     }
   }
 }

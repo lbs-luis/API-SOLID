@@ -1,39 +1,56 @@
 import { Prisma, Product } from "@prisma/client";
+import { IProductRepository, ProductUncheckedCreateInput } from "@/repositories/products/IProductsRepository";
 import { ResourceNotFoundError } from "@/use-cases/errors/resource-not-found-error";
-import { ProductsRepository } from "../products/products-repository";
 import { ProductAlreadyExistsError } from "@/use-cases/errors/product-already-exists-error";
 
-export class InMemoryProductsRepository implements ProductsRepository {
-  public registers: Product[] = [];
-  public stores: String[] = ['store-0'];
+export class InMemoryProductsRepository implements IProductRepository {
+  private products: Product[] = [];
+  private stores: { id: string }[] = [{ id: 'store-0' }]; // Mock de lojas
 
+  async getAllProducts(store_id: string): Promise<Product[]> {
+    const storeExists = this.stores.some(store => store.id === store_id);
+    if (!storeExists) throw new ResourceNotFoundError();
 
-
-  async getAllProducts(storeId: string) {
-    const store = this.stores.find((store) => store === storeId)
-    if (!store) throw new ResourceNotFoundError()
-    return this.registers.filter((product) => product.store_id === storeId)
+    return this.products.filter(product => product.store_id === store_id);
   }
-  async create({ description, bar_code, name, product_custom_id, store_id, quantity }: Prisma.ProductUncheckedCreateInput) {
-    const store = this.stores.find((store) => store === store_id)
-    if (!store) throw new ResourceNotFoundError()
-    const productWithSameCustomId = this.registers.find((product) => product.product_custom_id === product_custom_id)
-    if (productWithSameCustomId) throw new ProductAlreadyExistsError()
 
+  async create({
+    description,
+    bar_code,
+    name,
+    product_custom_id,
+    store_id,
+    quantity,
+    price
+  }: ProductUncheckedCreateInput): Promise<Product> {
+    const storeExists = this.stores.some(store => store.id === store_id);
+    if (!storeExists) throw new ResourceNotFoundError();
 
-    const product: Product = {
-      bar_code,
+    const productExists = this.products.some(product => product.product_custom_id === product_custom_id);
+    if (productExists) throw new ProductAlreadyExistsError();
+
+    const newProduct: Product = {
+      id: `product-${this.products.length}`,
       description,
+      bar_code,
       name,
       product_custom_id,
-      quantity: quantity || 0,
       store_id,
+      quantity: quantity || 0,
       created_at: new Date(),
       updated_at: new Date(),
-      id: `product-${this.registers.length}`
-    }
+      price_in_cents: Math.round(price * 100)
+    };
 
-    this.registers.push(product)
-    return product
+    this.products.push(newProduct);
+
+    return newProduct;
+  }
+
+  async delete(product_custom_id: string): Promise<void> {
+    const productIndex = this.products.findIndex(product => product.product_custom_id === product_custom_id);
+    if (productIndex === -1) throw new ResourceNotFoundError();
+
+    this.products.splice(productIndex, 1);
   }
 }

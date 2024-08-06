@@ -3,16 +3,14 @@ import { appRoutes } from "@/http/routes";
 import { ZodError } from "zod";
 import { env } from "./env";
 import fastifyJwt from "@fastify/jwt";
-import fastifyCookie from "@fastify/cookie";
+import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
 
 
 
 export const app = fastify()
 
-env.NODE_ENV
-
-app.register(cors, {
+app.register(cors, {  
   origin: (origin, cb) => {
     if (env.NODE_ENV === 'dev') {
       cb(null, true);
@@ -20,7 +18,7 @@ app.register(cors, {
     }
     // TODO: make CORS rules for production
   },
-  methods: ['GET', 'POST', 'PATCH'],
+  methods: ['GET', 'POST', 'PATCH', 'OPTIONS'],
   credentials: true,
 });
 
@@ -28,13 +26,16 @@ app.register(fastifyJwt, {
   secret: env.JWT_SECRET,
   cookie: {
     cookieName: 'refreshToken',
-    signed: false
+    signed: false,
   },
   sign: {
     expiresIn: '10m'
   }
 })
-app.register(fastifyCookie)
+app.register(fastifyCookie, {
+  secret: env.JWT_SECRET,
+  parseOptions: {}
+});
 
 app.register(appRoutes)
 

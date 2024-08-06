@@ -19,11 +19,13 @@ model User {
   id            String   @id @default(uuid())
   name          String
   email         String   @unique
-  role          Role     @default(OPERATOR) //Administrator / Operator
+  role          Role     @default(OPERATOR) // Administrator / Operator
   password_hash String
   created_at    DateTime @default(now())
 
-  Store Store[]
+  managedStores Store[] @relation("ManagedStores")
+
+  operatedStores Store[] @relation("OperatedStores")
 
   @@map("users")
 }
@@ -36,21 +38,25 @@ model Store {
   created_at      DateTime @default(now())
   updated_at      DateTime @default(now())
 
-  user       User   @relation(fields: [manager_id], references: [id])
   manager_id String
+  manager    User   @relation(fields: [manager_id], references: [id], name: "ManagedStores")
+
+  operators User[] @relation("OperatedStores")
 
   Product Product[]
+  Order   Order[]
 
   @@map("stores")
 }
 
 model Product {
   id                String @id @default(uuid())
-  product_custom_id String @unique
+  product_custom_id String
   bar_code          String
 
-  name        String
-  description String
+  name           String
+  description    String
+  price_in_cents Int
 
   quantity   Int      @default(0)
   created_at DateTime @default(now())
@@ -60,4 +66,27 @@ model Product {
   store_id String
 
   @@map("products")
+}
+
+enum orderStatus {
+  InUse
+  Available
+}
+
+enum orderType {
+  Intern
+  Personal
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  order_custom_id String
+  items           Json
+  status          orderStatus @default(Available)
+  type            orderType
+
+  store    Store  @relation(fields: [store_id], references: [id])
+  store_id String
+
+  @@map("orders")
 }

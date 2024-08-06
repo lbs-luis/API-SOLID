@@ -25,6 +25,19 @@ export class StoresRepository implements IStoresRepository {
     return stores
   }
 
+  async findAllUserStores(userId: string) {
+    const stores = await prisma.store.findMany({
+      where: {
+        operators: {
+          some: {
+            id: userId
+          }
+        }
+      }
+    })
+    return stores
+  }
+
   async create({ description, manager_id, name, store_custom_id }: Prisma.StoreUncheckedCreateInput) {
     const storeWithSameCustomId = await prisma.store.findUnique({
       where: {

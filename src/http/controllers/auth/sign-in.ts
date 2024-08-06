@@ -36,7 +36,8 @@ export async function signIn(request: FastifyRequest, response: FastifyReply) {
       }
     })
 
-    return response.setCookie('refreshToken', refreshToken, { path: '/', secure: true, sameSite: true, httpOnly: true }).status(200).send({ token })
+    return response.setCookie('refreshToken', refreshToken, { path: '/', secure: true, sameSite: 'none', httpOnly: true }).status(200).send({ token })
+    // return response.setCookie('refreshToken', refreshToken, { path: '/', secure: false, sameSite: 'lax', httpOnly: false }).status(200).send({ token })
 
   } catch (err) {
     if (err instanceof InvalidCredentialsError) {
