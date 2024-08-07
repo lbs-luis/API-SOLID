@@ -11,6 +11,7 @@
     "build": "tsup src --out-dir build",
     "test": "vitest run",
     "test:watch": "vitest",
+    "db:init": "pnpm dlx prisma generate && pnpm dlx prisma migrate dev init",
     "db:reset": "pnpm dlx prisma migrate reset",
     "db:studio": "pnpm dlx prisma studio"
   },

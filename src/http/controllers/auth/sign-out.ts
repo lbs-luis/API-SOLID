@@ -1,4 +1,4 @@
-import { env } from "@/env";
+import { env } from "@/../env";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function signOut(request: FastifyRequest, response: FastifyReply) {

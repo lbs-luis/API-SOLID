@@ -1,7 +1,7 @@
 import fastify from "fastify";
 import { appRoutes } from "@/http/routes";
 import { ZodError } from "zod";
-import { env } from "./env";
+import { JWT_SECRET, NODE_ENV } from "../env";
 import fastifyJwt from "@fastify/jwt";
 import fastifyCookie from '@fastify/cookie'
 import cors from '@fastify/cors'
@@ -10,9 +10,9 @@ import cors from '@fastify/cors'
 
 export const app = fastify()
 
-app.register(cors, {  
+app.register(cors, {
   origin: (origin, cb) => {
-    if (env.NODE_ENV === 'dev') {
+    if (NODE_ENV === 'dev') {
       cb(null, true);
       return;
     }
@@ -23,7 +23,7 @@ app.register(cors, {
 });
 
 app.register(fastifyJwt, {
-  secret: env.JWT_SECRET,
+  secret: JWT_SECRET,
   cookie: {
     cookieName: 'refreshToken',
     signed: false,
@@ -33,7 +33,7 @@ app.register(fastifyJwt, {
   }
 })
 app.register(fastifyCookie, {
-  secret: env.JWT_SECRET,
+  secret: JWT_SECRET,
   parseOptions: {}
 });
 
@@ -44,7 +44,7 @@ app.setErrorHandler((error, _, response) => {
     message: 'Validation error.', issues: error.format()
   })
 
-  if (env.NODE_ENV !== 'production') {
+  if (NODE_ENV !== 'production') {
     console.error(error)
   } else {
     // TODO: here we should log to an external tool like DataDog/NewRelic/Sentry
